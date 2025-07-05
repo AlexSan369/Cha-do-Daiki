@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, FormEvent, Dispatch, SetStateAction, ChangeEvent } from 'react';
+import React, { useState, FormEvent, Dispatch, SetStateAction } from 'react';
 import Image from 'next/image';
 import { db } from '../lib/firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc } from 'firebase/firestore';
 
 type Aba = 'inicio' | 'confirmar' | 'presentear';
 
