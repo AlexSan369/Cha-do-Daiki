@@ -21,28 +21,24 @@ export async function POST(req: NextRequest) {
       body: {
         items: [
           {
-            id: 'item-id-123', // ID único do item, pode ser gerado dinamicamente
+            id: 'presente-daiki', // <-- A ADIÇÃO CRUCIAL QUE VOCÊ APONTOU
             title,
             unit_price: Number(unit_price),
             quantity: Number(quantity),
             currency_id: 'BRL' as const,
           },
         ],
-        // --- INÍCIO DA MUDANÇA ---
         payment_methods: {
-          excluded_payment_types: [
-            // Se quiséssemos excluir boleto, por exemplo, adicionaríamos { id: 'ticket' }
-            // Deixando vazio, pedimos para não excluir nada.
-          ],
-          installments: 1 // Força o pagamento a ser em apenas 1 parcela (remove opções de parcelamento no cartão)
+          excluded_payment_types: [],
+          installments: 1
         },
-        // --- FIM DA MUDANÇA ---
         back_urls: {
           success: `${process.env.NEXT_PUBLIC_URL}/`,
           failure: `${process.env.NEXT_PUBLIC_URL}/`,
           pending: `${process.env.NEXT_PUBLIC_URL}/`,
         },
         auto_return: 'approved' as const,
+        binary_mode: true,
       }
     };
 
