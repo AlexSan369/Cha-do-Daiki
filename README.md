@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🍼 Chá de Bebê do Daiki
 
-## Getting Started
+Bem-vindo ao repositório do projeto do Chá de Bebê do Daiki! Esta é uma aplicação web moderna criada como um convite interativo e uma plataforma de crowdfunding para celebrar a chegada de uma nova vida.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### ✨ **Acesse a Aplicação Online** ✨
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+O site está no ar e totalmente funcional! Você pode visitá-lo aqui:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**[https://chadodaiki.vercel.app/](https://chadodaiki.vercel.app/)**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🚀 Funcionalidades Principais
 
-To learn more about Next.js, take a look at the following resources:
+Este projeto foi desenvolvido com uma série de funcionalidades para criar uma experiência completa e carinhosa para os convidados:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+* **Convite Interativo por Abas:** Navegação intuitiva que separa as seções de Início, Confirmação de Presença, Presentes e Mural de Recados.
+* **Confirmação de Presença (RSVP):** Um formulário para os convidados confirmarem presença, informando o número de adultos e crianças. Os dados são salvos em tempo real no banco de dados.
+* **Sistema de Presentes (Crowdfunding):** Uma aba dedicada onde os convidados podem presentear com valores monetários, com o objetivo de alcançar uma meta para a compra de itens para o bebê.
+* **Integração de Pagamento Real:** O fluxo de pagamento é processado de forma segura através da API do **Mercado Pago**.
+* **Mural de Recados em Tempo Real:** Uma área interativa onde os convidados podem deixar mensagens de carinho, que aparecem na tela para todos instantaneamente, sem a necessidade de recarregar a página.
+* **Contador de Semanas:** Um componente visual que calcula e exibe a semana atual da gestação.
+* **Design Responsivo:** A interface foi construída para se adaptar perfeitamente a qualquer tamanho de tela, seja em computadores, tablets ou celulares.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🛠️ Tecnologias Utilizadas
 
-## Deploy on Vercel
+Este projeto foi construído com um stack de tecnologias moderno e robusto:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+* **Framework Front-end:** [Next.js](https://nextjs.org/) (com React e TypeScript)
+* **Estilização:** [Tailwind CSS](https://tailwindcss.com/)
+* **Banco de Dados:** [Google Firestore](https://firebase.google.com/docs/firestore) (para RSVP e Mural de Recados)
+* **Pagamentos:** [SDK do Mercado Pago](https://www.mercadopago.com.br/developers)
+* **Hospedagem e Deploy:** [Vercel](https://vercel.com/)
+* **Controle de Versão:** [Git](https://git-scm.com/) e [GitHub](https://github.com/)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 💻 Como Rodar o Projeto Localmente
+
+Para rodar este projeto no seu próprio computador, siga os passos abaixo:
+
+1.  **Clone o Repositório**
+    ```bash
+    git clone [https://github.com/AlexSan369/Cha-do-Daiki.git](https://github.com/AlexSan369/Cha-do-Daiki.git)
+    ```
+
+2.  **Navegue até a Pasta do Projeto**
+    ```bash
+    cd Cha-do-Daiki
+    ```
+
+3.  **Instale as Dependências**
+    ```bash
+    npm install
+    ```
+
+4.  **Configure as Variáveis de Ambiente**
+    * Crie um arquivo chamado `.env.local` na raiz do projeto.
+    * Preencha o arquivo com suas chaves do Firebase e do Mercado Pago, seguindo o exemplo do arquivo `.env.example` (que você pode criar a partir do nosso `.env.local`).
+
+5.  **Rode o Servidor de Desenvolvimento**
+    ```bash
+    npm run dev
+    ```
+
+    Abra [http://localhost:3000](http://localhost:3000) no seu navegador para ver o resultado.
+
+---
+_Este projeto foi desenvolvido com muito carinho para celebrar a chegada do Daiki._
