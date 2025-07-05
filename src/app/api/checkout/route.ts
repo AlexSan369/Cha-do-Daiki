@@ -2,7 +2,6 @@
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 import { NextResponse, type NextRequest } from 'next/server';
 
-// Inicializa o cliente com a classe
 const client = new MercadoPagoConfig({
   accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN!,
 });
@@ -18,19 +17,26 @@ export async function POST(req: NextRequest) {
       );
     }
     
-    // --- INÍCIO DA CORREÇÃO ---
-    // Criando o corpo da preferência DENTRO de um objeto "body"
     const preferenceBody = {
       body: {
         items: [
           {
-            id: 'item-id-123', // ID do item, pode ser gerado dinamicamente
+            id: 'item-id-123', // ID único do item, pode ser gerado dinamicamente
             title,
             unit_price: Number(unit_price),
             quantity: Number(quantity),
             currency_id: 'BRL' as const,
           },
         ],
+        // --- INÍCIO DA MUDANÇA ---
+        payment_methods: {
+          excluded_payment_types: [
+            // Se quiséssemos excluir boleto, por exemplo, adicionaríamos { id: 'ticket' }
+            // Deixando vazio, pedimos para não excluir nada.
+          ],
+          installments: 1 // Força o pagamento a ser em apenas 1 parcela (remove opções de parcelamento no cartão)
+        },
+        // --- FIM DA MUDANÇA ---
         back_urls: {
           success: `${process.env.NEXT_PUBLIC_URL}/`,
           failure: `${process.env.NEXT_PUBLIC_URL}/`,
@@ -41,9 +47,7 @@ export async function POST(req: NextRequest) {
     };
 
     const preference = new Preference(client);
-    // Passando o objeto que agora contém a propriedade "body"
     const result = await preference.create(preferenceBody);
-    // --- FIM DA CORREÇÃO ---
 
     return NextResponse.json(
       { id: result.id, init_point: result.init_point },
