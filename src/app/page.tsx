@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState, FormEvent, Dispatch, SetStateAction } from 'react';
+import React, { useState, useEffect, FormEvent, Dispatch, SetStateAction, ChangeEvent } from 'react';
 import Image from 'next/image';
 import { db } from '../lib/firebase';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, onSnapshot } from 'firebase/firestore';
+import MuralDeRecados from '../components/MuralDeRecados';
 
 type Aba = 'inicio' | 'confirmar' | 'presentear';
 
@@ -63,7 +64,7 @@ const ContadorSemanas = () => {
   const weeks = Math.floor(diffDays / 7);
 
   return (
-    <div className="absolute bottom-2 right-2 w-36 h-28 sm:w-44 sm:h-36">
+    <div className="absolute top-110 left-90 w-36 h-38 sm:w-54 sm:h-36">
       <Image src="/images/grafico-semanas.png" alt="Gráfico de semanas da mamãe" layout="fill" objectFit="contain" />
       <div className="absolute inset-0 flex justify-center items-center">
         <span className="text-white text-5xl sm:text-6xl font-bold" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
@@ -153,16 +154,38 @@ export default function Home() {
     );
   };
 
-  const AbaPresentear = () => {
+ const AbaPresentear = () => {
+    // Estados para controlar a seleção de valores
     const [valorSelecionado, setValorSelecionado] = useState(50);
     const [valorCustom, setValorCustom] = useState('');
     const [inputAtivo, setInputAtivo] = useState(false);
+    
+    // Estado para o processo de pagamento
     const [isLoading, setIsLoading] = useState(false);
 
-    // Valores para a barra de progresso (vamos torná-los dinâmicos depois)
+    // Estado para o valor arrecadado (agora dinâmico)
+    const [arrecadado, setArrecadado] = useState(0);
     const meta = 2000;
-    const arrecadado = 520; // Valor fixo para teste visual
-    const porcentagem = (arrecadado / meta) * 100;
+
+    // Efeito para buscar o valor total arrecadado do Firebase em tempo real
+    useEffect(() => {
+      // Aponta para o documento 'total' dentro da coleção 'arrecadacao'
+      const summaryRef = doc(db, 'arrecadacao', 'total');
+      
+      // 'onSnapshot' é o listener em tempo real
+      const unsubscribe = onSnapshot(summaryRef, (doc) => {
+        // Se o documento existir, atualiza o estado 'arrecadado'
+        if (doc.exists()) {
+          setArrecadado(doc.data().valor);
+        }
+      });
+
+      // Retorna a função de limpeza para parar de 'escutar' quando o componente não estiver mais na tela
+      return () => unsubscribe();
+    }, []); // O array vazio [] faz com que isso rode apenas uma vez, quando o componente é montado
+
+    // Calcula a porcentagem para a barra de progresso
+    const porcentagem = arrecadado > 0 ? (arrecadado / meta) * 100 : 0;
 
     const valoresSugeridos = [30, 50, 100];
 
@@ -175,7 +198,7 @@ export default function Home() {
     const handleCustomInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setInputAtivo(true);
       setValorCustom(e.target.value);
-      setValorSelecionado(0); // Desseleciona os botões
+      setValorSelecionado(0);
     };
     
     const handlePagamento = async () => {
@@ -301,12 +324,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <section id="mural" className="w-full max-w-4xl mt-10 text-center">
-        <div className="p-8 bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl min-h-[300px]">
-          <h2 className="text-3xl font-bold text-cyan-800 mb-4">Mural de Recados</h2>
-          <p>O mural de recados para o Daiki ficará aqui...</p>
-        </div>
-      </section>
+      <MuralDeRecados />
       <footer className="w-full h-32 mt-10" style={{ backgroundImage: "url('/images/fundo-footer.png')", backgroundSize: 'contain', backgroundPosition: 'bottom center', backgroundRepeat: 'no-repeat' }}></footer>
       
       <ConfirmationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
