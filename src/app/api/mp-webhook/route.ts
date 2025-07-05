@@ -1,36 +1,38 @@
 // Caminho: src/app/api/mp-webhook/route.ts
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/firebase';
-import { doc, setDoc, increment } from 'firebase/firestore'; // Trocamos updateDoc por setDoc
+// Usando o caminho relativo para máxima compatibilidade
+import { db } from '../../../lib/firebase'; 
+import { doc, setDoc, increment } from 'firebase/firestore';
 
 const client = new MercadoPagoConfig({
   accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN!,
 });
 
 export async function POST(request: Request) {
-  const body = await request.json();
+  try {
+    const body = await request.json();
 
-  if (body.type === 'payment') {
-    const paymentId = body.data.id;
-
-    try {
+    if (body.type === 'payment') {
+      const paymentId = body.data.id;
+      
       const payment = new Payment(client);
       const paymentInfo = await payment.get({ id: paymentId });
       
-      if (paymentInfo.status === 'approved' && paymentInfo.transaction_amount) {
+      if (paymentInfo && paymentInfo.status === 'approved' && paymentInfo.transaction_amount) {
         const summaryRef = doc(db, 'arrecadacao', 'total');
 
-        // Usamos setDoc com { merge: true } para criar o doc se não existir, ou atualizar se já existir.
         await setDoc(summaryRef, {
           valor: increment(paymentInfo.transaction_amount)
         }, { merge: true });
-      }
-    } catch (error) {
-      console.error('Erro ao processar webhook:', error);
-      return NextResponse.json({ success: false }, { status: 500 });
-    }
-  }
 
-  return NextResponse.json({ success: true });
+        console.log(`Webhook processado com sucesso para pagamento ${paymentId}`);
+      }
+    }
+    return NextResponse.json({ success: true });
+
+  } catch (error) {
+    console.error('Erro no processamento do webhook:', error);
+    return NextResponse.json({ success: false, error: 'Erro interno do servidor' }, { status: 500 });
+  }
 }
