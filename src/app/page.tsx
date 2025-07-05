@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, FormEvent, Dispatch, SetStateAction, ChangeEvent } from 'react';
+import React, { useState, useEffect, FormEvent, Dispatch, SetStateAction } from 'react';
 import Image from 'next/image';
 import { db } from '../lib/firebase';
 import { collection, addDoc, doc, onSnapshot } from 'firebase/firestore';
