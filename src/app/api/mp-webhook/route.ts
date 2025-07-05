@@ -1,8 +1,8 @@
 // Caminho: src/app/api/mp-webhook/route.ts
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/firebase'; // Usando o atalho, pois já sabemos que está configurado
-import { doc, updateDoc, increment } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { doc, setDoc, increment } from 'firebase/firestore'; // Trocamos updateDoc por setDoc
 
 const client = new MercadoPagoConfig({
   accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN!,
@@ -17,15 +17,14 @@ export async function POST(request: Request) {
     try {
       const payment = new Payment(client);
       const paymentInfo = await payment.get({ id: paymentId });
-
+      
       if (paymentInfo.status === 'approved' && paymentInfo.transaction_amount) {
-        // Referência para um documento específico que guardará o total
         const summaryRef = doc(db, 'arrecadacao', 'total');
 
-        // Atualiza o total de forma atômica
-        await updateDoc(summaryRef, {
+        // Usamos setDoc com { merge: true } para criar o doc se não existir, ou atualizar se já existir.
+        await setDoc(summaryRef, {
           valor: increment(paymentInfo.transaction_amount)
-        });
+        }, { merge: true });
       }
     } catch (error) {
       console.error('Erro ao processar webhook:', error);
