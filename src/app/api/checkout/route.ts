@@ -10,14 +10,12 @@ const client = new MercadoPagoConfig({
 
 export async function POST(req: NextRequest) {
   try {
-    // Recebendo o nome do doador do front-end
     const { title, unit_price, quantity, donor_name } = await req.json();
 
     if (!title || !unit_price || !quantity || !donor_name) {
       return NextResponse.json({ message: 'Dados da requisição ausentes' }, { status: 400 });
     }
     
-    // 1. Salva uma "intenção de doação" no Firebase
     const donationRef = await addDoc(collection(db, "doacoes"), {
         nomeDoador: donor_name,
         valor: Number(unit_price),
@@ -25,7 +23,6 @@ export async function POST(req: NextRequest) {
         createdAt: serverTimestamp()
     });
 
-    // 2. Cria a preferência de pagamento no Mercado Pago
     const preferenceBody = {
       body: {
         items: [
@@ -37,13 +34,14 @@ export async function POST(req: NextRequest) {
             currency_id: 'BRL' as const,
           },
         ],
-        // 3. Adiciona o ID do nosso documento do Firebase como referência externa
         external_reference: donationRef.id,
+        // --- INÍCIO DA MUDANÇA ---
         back_urls: {
-          success: `${process.env.NEXT_PUBLIC_URL}/`,
-          failure: `${process.env.NEXT_PUBLIC_URL}/`,
-          pending: `${process.env.NEXT_PUBLIC_URL}/`,
+          success: `${process.env.NEXT_PUBLIC_URL}/?status=approved`, // Adicionado o aviso de sucesso
+          failure: `${process.env.NEXT_PUBLIC_URL}/?status=failure`,
+          pending: `${process.env.NEXT_PUBLIC_URL}/?status=pending`,
         },
+        // --- FIM DA MUDANÇA ---
         auto_return: 'approved' as const,
         binary_mode: true,
       }
@@ -54,8 +52,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ id: result.id, init_point: result.init_point });
   } catch (err) {
-    console.error('Mercado Pago error →', err);
-    const msg = err instanceof Error ? err.message : 'Erro desconhecido ao criar preferência';
-    return NextResponse.json({ message: msg }, { status: 500 });
+    // ... (bloco catch continua o mesmo)
   }
 }

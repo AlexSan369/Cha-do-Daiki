@@ -1,10 +1,11 @@
 // Caminho: src/app/page.tsx
 "use client";
 
-import React, { useState, useEffect, FormEvent } from 'react';
+import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import Image from 'next/image';
 import { db } from '../lib/firebase';
 import { collection, addDoc, doc, onSnapshot } from 'firebase/firestore';
+import { useSearchParams } from 'next/navigation';
 
 // Importando nossos componentes de seus próprios arquivos
 import HowItWorksModal from '../components/HowItWorksModal';
@@ -20,6 +21,20 @@ export default function Home() {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [isHowItWorksModalOpen, setIsHowItWorksModalOpen] = useState(false);
 
+  // --- LÓGICA DO "CARIMBO DIGITAL" PARA IDENTIFICAR DOADORES ---
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    // Verifica se a URL contém "?status=approved"
+    if (searchParams.get('status') === 'approved') {
+      // Se sim, salva o "carimbo" no navegador
+      localStorage.setItem('hasDonated', 'true');
+      console.log("Doador verificado e 'carimbo' salvo no Local Storage.");
+      // Limpa a URL para não mostrar os parâmetros, melhorando a experiência do usuário
+      window.history.replaceState({}, document.title, "/");
+    }
+  }, [searchParams]);
+
   const AbaInicio = () => (
     <>
       <div className="my-6 relative w-full max-w-md mx-auto">
@@ -30,12 +45,12 @@ export default function Home() {
         <p className="font-semibold text-2xl text-cyan-700" style={{fontFamily: 'cursive'}}>É HORA DE CELEBRAR A VIDA!</p>
         <p>Com o coração cheio de alegria, convidamos você para celebrar a chegada do nosso amado Daiki. Estamos preparando tudo com muito carinho para este momento e sua presença, mesmo que virtual, é o nosso maior presente. Vamos juntos compartilhar sorrisos e criar memórias inesquecíveis!</p>
         <div className="text-center pt-4">
-            <button 
-              onClick={() => setIsHowItWorksModalOpen(true)} 
-              className="px-6 py-2 bg-cyan-500 text-white font-bold rounded-lg shadow-md hover:bg-cyan-600 transition-all transform hover:scale-105"
-            >
-              Como Funciona?
-            </button>
+          <button 
+            onClick={() => setIsHowItWorksModalOpen(true)} 
+            className="px-6 py-2 bg-cyan-500 text-white font-bold rounded-lg shadow-md hover:bg-cyan-600 transition-all transform hover:scale-105"
+          >
+            Como Funciona?
+          </button>
         </div>
       </div>
     </>
@@ -86,16 +101,12 @@ export default function Home() {
   };
 
   const AbaPresentear = () => {
-    // ESTADOS ANTIGOS
     const [valorSelecionado, setValorSelecionado] = useState(50);
     const [valorCustom, setValorCustom] = useState('');
     const [inputAtivo, setInputAtivo] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [arrecadado, setArrecadado] = useState(0);
-    
-    // NOVO ESTADO PARA O NOME DO DOADOR
     const [nomeDoador, setNomeDoador] = useState('');
-
     const meta = 2000;
     
     useEffect(() => {
@@ -106,79 +117,36 @@ export default function Home() {
 
     const porcentagem = arrecadado > 0 ? (arrecadado / meta) * 100 : 0;
     const valoresSugeridos = [30, 50, 100];
-
-    const handleSelecionarValor = (valor: number) => {
-      setValorSelecionado(valor);
-      setInputAtivo(false);
-      setValorCustom('');
-    };
-
-    const handleCustomInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setInputAtivo(true);
-      setValorCustom(e.target.value);
-      setValorSelecionado(0);
-    };
+    const handleSelecionarValor = (valor: number) => { setValorSelecionado(valor); setInputAtivo(false); setValorCustom(''); };
+    const handleCustomInputChange = (e: ChangeEvent<HTMLInputElement>) => { setInputAtivo(true); setValorCustom(e.target.value); setValorSelecionado(0); };
     
-    // FUNÇÃO DE PAGAMENTO ATUALIZADA
     const handlePagamento = async () => {
         const valorFinal = inputAtivo ? Number(valorCustom) : valorSelecionado;
-        
-        // Nova validação para o nome
-        if (!nomeDoador.trim()) {
-            alert("Por favor, preencha seu nome para identificarmos seu presente.");
-            return;
-        }
-        if (valorFinal <= 0) {
-            alert("Por favor, selecione ou digite um valor para presentear.");
-            return;
-        }
-
+        if (!nomeDoador.trim()) { alert("Por favor, preencha seu nome para identificarmos seu presente."); return; }
+        if (valorFinal <= 0) { alert("Por favor, selecione ou digite um valor para presentear."); return; }
         setIsLoading(true);
-
         try {
-            // Agora enviamos também o nome do doador
             const response = await fetch('/api/checkout', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    title: `Presente de ${nomeDoador} para o Daiki`,
-                    unit_price: valorFinal,
-                    quantity: 1,
-                    donor_name: nomeDoador, // Enviando o nome para o backend
-                }),
+                body: JSON.stringify({ title: `Presente de ${nomeDoador} para o Daiki`, unit_price: valorFinal, quantity: 1, donor_name: nomeDoador }),
             });
-
             if (!response.ok) { throw new Error("Falha ao criar o link de pagamento."); }
             const data = await response.json();
             if (data.init_point) { window.location.href = data.init_point; }
             else { alert('Erro ao gerar link de pagamento.'); }
-
-        } catch (error) {
-            console.error('Erro no pagamento:', error);
-            alert('Ocorreu um erro inesperado. Tente novamente.');
-        } finally {
-            setIsLoading(false);
-        }
+        } catch (error) { console.error('Erro no pagamento:', error); alert('Ocorreu um erro inesperado. Tente novamente.');
+        } finally { setIsLoading(false); }
     }
     return (
       <div className="py-10">
         <h2 className="text-2xl font-bold text-cyan-800 text-center">Presentear o Daiki</h2>
         <p className="mt-2 text-center text-gray-600">Sua contribuição ajudará a comprar um kit de fraldas ecológicas e outros itens essenciais!</p>
-        
         <div className="mt-8 max-w-md mx-auto">
-            {/* NOVO CAMPO DE NOME */}
             <div className="mb-6">
                 <label htmlFor="donorName" className="block text-lg font-semibold text-gray-700 text-center mb-2">Seu nome</label>
-                <input
-                  type="text"
-                  id="donorName"
-                  value={nomeDoador}
-                  onChange={(e) => setNomeDoador(e.target.value)}
-                  className="w-full max-w-xs mx-auto p-3 text-center text-xl font-bold border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
-                  placeholder="Digite seu nome aqui"
-                />
+                <input type="text" id="donorName" value={nomeDoador} onChange={(e) => setNomeDoador(e.target.value)} className="w-full max-w-xs mx-auto p-3 text-center text-xl font-bold border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500" placeholder="Digite seu nome aqui" />
             </div>
-
             <div className="flex justify-between mb-1"><span className="text-base font-medium text-cyan-700">Arrecadado: R$ {arrecadado.toFixed(2)}</span><span className="text-base font-medium text-gray-500">Meta: R$ {meta.toFixed(2)}</span></div>
             <div className="w-full bg-gray-200 rounded-full h-4 shadow-inner"><div className="bg-gradient-to-r from-cyan-400 to-teal-500 h-4 rounded-full shadow-md" style={{ width: `${porcentagem}%` }}></div></div>
         </div>
