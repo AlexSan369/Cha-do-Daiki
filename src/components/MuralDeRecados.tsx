@@ -98,31 +98,37 @@ const MuralDeRecados = () => {
 
       <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {recados.map((recado, index) => {
-          // --- INÍCIO DA LÓGICA DE ESTILO CONDICIONAL ---
           const isDonorPost = recado.isDoador;
+          // Define a cor normal baseada no índice
           const normalColor = postItColors[index % postItColors.length];
           
+          // Define as classes com base em ser doador ou não
           const postItClasses = isDonorPost 
             ? 'bg-gradient-to-br from-yellow-300 via-amber-400 to-yellow-500 border-2 border-amber-500 shadow-yellow-500/50' 
             : `${normalColor} border-2 border-transparent`;
 
-          const nameClasses = isDonorPost 
-            ? 'text-amber-900' 
-            : 'text-gray-800';
-
-          const messageClasses = isDonorPost 
-            ? 'text-amber-800'
-            : 'text-gray-700';
-          // --- FIM DA LÓGICA DE ESTILO CONDICIONAL ---
+          const nameClasses = isDonorPost ? 'text-amber-900' : 'text-gray-800';
+          const messageClasses = isDonorPost ? 'text-amber-800' : 'text-gray-700';
 
           return (
-            <div key={recado.id} className={`p-6 rounded-lg shadow-xl transform hover:-rotate-3 transition-transform ${postItClasses}`}>
-              <div className={`font-bold text-xl text-center mb-4 flex items-center justify-center gap-2 ${nameClasses}`} style={{fontFamily: 'cursive'}}>
-                <span>{recado.nome}</span>
-                {/* O coração agora aparece para todos, mas podemos mudar se quiser */}
-                <span title="Agradecemos o presente!">❤️</span>
+            <div key={recado.id} className={`p-6 rounded-lg shadow-xl transform hover:-rotate-3 transition-transform flex flex-col justify-between min-h-[180px] ${postItClasses}`}>
+              <div>
+                <div className={`font-bold text-xl text-center mb-4 flex items-center justify-center gap-2 ${nameClasses}`} style={{fontFamily: 'cursive'}}>
+                  <span>{recado.nome}</span>
+                  {/* Agora o coração só aparece se for doador */}
+                  {isDonorPost && <span>❤️</span>}
+                </div>
+                <p className={`break-words ${messageClasses}`}>{recado.mensagem}</p>
               </div>
-              <p className={`break-words ${messageClasses}`}>{recado.mensagem}</p>
+
+              {/* --- INÍCIO DA MUDANÇA --- */}
+              {/* Mensagem de agradecimento que só aparece para doadores */}
+              {isDonorPost && (
+                <p className="mt-4 text-right text-xs italic text-amber-900/80">
+                  Agradecemos o presente!
+                </p>
+              )}
+              {/* --- FIM DA MUDANÇA --- */}
             </div>
           )
         })}
