@@ -1,7 +1,7 @@
 // Caminho: src/app/page.tsx
 "use client";
 
-import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react';
+import React, { useState, useEffect, FormEvent } from 'react';
 import Image from 'next/image';
 import { db } from '../lib/firebase';
 import { collection, addDoc, doc, onSnapshot } from 'firebase/firestore';
