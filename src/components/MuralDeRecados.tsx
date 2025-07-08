@@ -9,11 +9,11 @@ interface Recado {
   id: string;
   nome: string;
   mensagem: string;
-  cor: string;
+  isDoador: boolean;
 }
 
 const postItColors = ['bg-blue-200', 'bg-green-200', 'bg-yellow-200'];
-const RECADO_LIMIT = 9; // Limite de recados por página
+const RECADO_LIMIT = 6;
 
 const MuralDeRecados = () => {
   const [recados, setRecados] = useState<Recado[]>([]);
@@ -25,33 +25,17 @@ const MuralDeRecados = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
-  // Efeito para buscar os recados iniciais
   useEffect(() => {
-    const q = query(
-      collection(db, 'recados'), 
-      orderBy('confirmadoEm', 'desc'), 
-      limit(RECADO_LIMIT)
-    );
-    
+    const q = query(collection(db, 'recados'), orderBy('confirmadoEm', 'desc'), limit(RECADO_LIMIT));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      // --- INÍCIO DA CORREÇÃO ---
-      // Usamos .docs.map() que nos dá o 'doc' e o 'index'
-      const recadosData = querySnapshot.docs.map((doc, index) => {
-        const data = doc.data();
-        return { // O .map precisa que a gente retorne o novo objeto
-          id: doc.id,
-          nome: data.nome,
-          mensagem: data.mensagem,
-          cor: postItColors[index % postItColors.length]
-        };
-      });
-      // --- FIM DA CORREÇÃO ---
-      
+      const recadosData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      } as Recado));
       setRecados(recadosData);
       setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
       setHasMore(querySnapshot.docs.length === RECADO_LIMIT);
     });
-
     return () => unsubscribe();
   }, []);
 
@@ -61,8 +45,16 @@ const MuralDeRecados = () => {
     if (novaMensagem.length > 100) { setError('Sua mensagem não pode ter mais de 100 caracteres.'); return; }
     setIsLoading(true);
     setError('');
+    
+    const hasDonated = localStorage.getItem('hasDonated') === 'true';
+
     try {
-      await addDoc(collection(db, 'recados'), { nome: novoNome, mensagem: novaMensagem, confirmadoEm: serverTimestamp() });
+      await addDoc(collection(db, 'recados'), {
+        nome: novoNome,
+        mensagem: novaMensagem,
+        confirmadoEm: serverTimestamp(),
+        isDoador: hasDonated
+      });
       setNovoNome('');
       setNovaMensagem('');
     } catch (err) { console.error(err); setError('Ocorreu um erro ao enviar seu recado.');
@@ -79,16 +71,10 @@ const MuralDeRecados = () => {
       limit(RECADO_LIMIT)
     );
     const documentSnapshots = await getDocs(nextQuery);
-    const newRecados = documentSnapshots.docs.map((doc, index) => {
-        const data = doc.data();
-        const colorIndex = (recados.length + index) % postItColors.length;
-        return {
-            id: doc.id,
-            nome: data.nome,
-            mensagem: data.mensagem,
-            cor: postItColors[colorIndex]
-        };
-    });
+    const newRecados = documentSnapshots.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+    } as Recado));
     setRecados(prevRecados => [...prevRecados, ...newRecados]);
     setLastVisible(documentSnapshots.docs[documentSnapshots.docs.length - 1]);
     setHasMore(documentSnapshots.docs.length === RECADO_LIMIT);
@@ -111,21 +97,40 @@ const MuralDeRecados = () => {
       </div>
 
       <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {recados.map(recado => (
-          <div key={recado.id} className={`p-6 rounded-lg shadow-xl transform hover:-rotate-3 transition-transform ${recado.cor}`}>
-            <p className="font-bold text-gray-800 text-xl text-center mb-4" style={{ fontFamily: 'cursive' }}>{recado.nome}</p>
-            <p className="text-gray-700 break-words">{recado.mensagem}</p>
-          </div>
-        ))}
+        {recados.map((recado, index) => {
+          // --- INÍCIO DA LÓGICA DE ESTILO CONDICIONAL ---
+          const isDonorPost = recado.isDoador;
+          const normalColor = postItColors[index % postItColors.length];
+          
+          const postItClasses = isDonorPost 
+            ? 'bg-gradient-to-br from-yellow-300 via-amber-400 to-yellow-500 border-2 border-amber-500 shadow-yellow-500/50' 
+            : `${normalColor} border-2 border-transparent`;
+
+          const nameClasses = isDonorPost 
+            ? 'text-amber-900' 
+            : 'text-gray-800';
+
+          const messageClasses = isDonorPost 
+            ? 'text-amber-800'
+            : 'text-gray-700';
+          // --- FIM DA LÓGICA DE ESTILO CONDICIONAL ---
+
+          return (
+            <div key={recado.id} className={`p-6 rounded-lg shadow-xl transform hover:-rotate-3 transition-transform ${postItClasses}`}>
+              <div className={`font-bold text-xl text-center mb-4 flex items-center justify-center gap-2 ${nameClasses}`} style={{fontFamily: 'cursive'}}>
+                <span>{recado.nome}</span>
+                {/* O coração agora aparece para todos, mas podemos mudar se quiser */}
+                <span title="Agradecemos o presente!">❤️</span>
+              </div>
+              <p className={`break-words ${messageClasses}`}>{recado.mensagem}</p>
+            </div>
+          )
+        })}
       </div>
 
       {hasMore && (
         <div className="mt-10 text-center">
-          <button
-            onClick={fetchMoreRecados}
-            disabled={loadingMore}
-            className="px-6 py-3 bg-cyan-500 text-white font-bold rounded-lg shadow-md hover:bg-cyan-600 transition-all disabled:bg-gray-400"
-          >
+          <button onClick={fetchMoreRecados} disabled={loadingMore} className="px-6 py-3 bg-cyan-500 text-white font-bold rounded-lg shadow-md hover:bg-cyan-600 transition-all disabled:bg-gray-400">
             {loadingMore ? 'Carregando...' : 'Carregar Mais Recados'}
           </button>
         </div>
