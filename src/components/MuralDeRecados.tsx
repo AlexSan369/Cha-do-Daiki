@@ -116,7 +116,7 @@ const MuralDeRecados = () => {
                 <div className={`font-bold text-xl text-center mb-4 flex items-center justify-center gap-2 ${nameClasses}`} style={{fontFamily: 'cursive'}}>
                   <span>{recado.nome}</span>
                   {/* Agora o coração só aparece se for doador */}
-                  {isDonorPost && <span>❤️</span>}
+                  {isDonorPost && <span>👑</span>}
                 </div>
                 <p className={`break-words ${messageClasses}`}>{recado.mensagem}</p>
               </div>
@@ -125,7 +125,7 @@ const MuralDeRecados = () => {
               {/* Mensagem de agradecimento que só aparece para doadores */}
               {isDonorPost && (
                 <p className="mt-4 text-right text-xs italic text-amber-900/80">
-                  Agradecemos o presente!
+                  Agradecemos o presente! 🎁
                 </p>
               )}
               {/* --- FIM DA MUDANÇA --- */}

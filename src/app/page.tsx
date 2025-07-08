@@ -174,7 +174,7 @@ function ChaDeBebePage() {
   };
 
   return (
-    <main className="flex flex-col items-center min-h-screen p-4 sm:p-8">
+    <main className="flex flex-col items-center min-h-screen p-4 pb-0 sm:p-8">
       <div className="w-full max-w-4xl">
         <header className="relative w-full h-48 sm:h-56 rounded-t-2xl flex flex-col justify-center items-center text-center p-4" style={{ backgroundImage: "url('/images/fundo-header.png')", backgroundSize: 'cover', backgroundPosition: 'bottom' }}>
           <h2 className={`text-4xl sm:text-6xl text-white ${grafiteFonte.className}`} style={{ textShadow: '2px 2px 4px rgba(0,0,0,1)' }}>Chá de Bebê do</h2>
@@ -187,7 +187,7 @@ function ChaDeBebePage() {
         </div>
       </div>
       <MuralDeRecados />
-      <footer className="w-full h-32 mt-10" style={{ backgroundImage: "url('/images/fundo-footer.png')", backgroundSize: 'contain', backgroundPosition: 'bottom center', backgroundRepeat: 'no-repeat' }}></footer>
+      <footer className="w-full h-32 mt-10 mb-0" style={{ backgroundImage: "url('/images/fundo-footer.png')", backgroundSize: 'contain', backgroundPosition: 'bottom center', backgroundRepeat: 'no-repeat' }}></footer>
       <ConfirmationModal isOpen={isConfirmationModalOpen} onClose={() => setIsConfirmationModalOpen(false)} />
       <HowItWorksModal isOpen={isHowItWorksModalOpen} onClose={() => setIsHowItWorksModalOpen(false)} />
     </main>

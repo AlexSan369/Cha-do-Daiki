@@ -13,22 +13,22 @@ const steps = [
   {
     number: 1,
     title: "Convite Online",
-    description: "Essa é a vaquinha para as Fraldas do Daiki."
+    description: "Essa é a vaquinha para as Fraldas do Daiki, , contribua com o valor que puder para ajudar a comprar as fraldas."
   },
   {
     number: 2,
-    title: "As Fraldas",
-    description: "Optamos em utilizar fraldas ecológicas, pensando na saúde do Daiki e do planeta."
+    title: "Presentes",
+    description: "Optamos em utilizar fraldas ecológicas, pensando na saúde do Daiki e do planeta. Cada Fralda Eco custa igual um pacote de fraldas convencional de 45 ~ 55 reais."
   },
   {
     number: 3,
-    title: "Sobre o Evento",
-    description: "A localização, Data e Hora será enviada pelo WhatsApp."
+    title: "O que são Fraldas ecológicas?",
+    description: "São fraldas de pano modernas e reutilizáveis, que evitam alergias e geram menos lixo para o meio ambiente."
   },
   {
     number: 4,
-    title: "O que são Fraldas ecológicas?",
-    description: "São fraldas de pano modernas e reutilizáveis, que evitam alergias e geram menos lixo para o meio ambiente."
+    title: "Sobre o Evento",
+    description: "O Chá de Bebê do Daiki será no dia 29/08/2025, às 15:00, na Rua teste, 123, Tamandaré - PE. Será uma festa linda com muito amor e alegria!"
   },
 ];
 
