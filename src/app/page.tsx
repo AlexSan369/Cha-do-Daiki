@@ -6,18 +6,18 @@ import Image from 'next/image';
 import { db } from '../lib/firebase';
 import { collection, addDoc, doc, onSnapshot } from 'firebase/firestore';
 import { useSearchParams } from 'next/navigation';
-
 import localFont from 'next/font/local';
-// Configura a fonte local
+
+// Suas fontes customizadas
 const graffitiFont = localFont({ 
   src: '../fonts/graffiti-font.otf', 
-  display: 'swap', // Garante que o texto apareça com uma fonte padrão enquanto a sua carrega
-  variable: '--font-graffiti' // Cria uma variável CSS para a fonte
+  display: 'swap',
+  variable: '--font-graffiti'
 });
 const grafiteFonte = localFont({ 
   src: '../fonts/grafitFonte.ttf', 
-  display: 'swap', // Garante que o texto apareça com uma fonte padrão enquanto a sua carrega
-  variable: '--fonte-grafite' // Cria uma variável CSS para a fonte
+  display: 'swap',
+  variable: '--fonte-grafite'
 });
 
 // Importando nossos componentes de seus próprios arquivos
@@ -29,8 +29,6 @@ import MuralDeRecados from '../components/MuralDeRecados';
 
 type Aba = 'inicio' | 'confirmar' | 'presentear';
 
-// --- NOSSO COMPONENTE PRINCIPAL COM TODA A LÓGICA ---
-// Ele usa os hooks que precisam do "use client"
 function ChaDeBebePage() {
   const [abaAtiva, setAbaAtiva] = useState<Aba>('inicio');
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
@@ -39,10 +37,20 @@ function ChaDeBebePage() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (searchParams.get('status') === 'approved') {
-      localStorage.setItem('hasDonated', 'true');
-      console.log("Doador verificado e 'carimbo' salvo no Local Storage.");
-      window.history.replaceState({}, document.title, window.location.pathname);
+    const donationId = searchParams.get('donation_id');
+    if (donationId) {
+      console.log(`Donation ID encontrado: ${donationId}. Iniciando escuta...`);
+      const donationRef = doc(db, 'doacoes', donationId);
+      const unsubscribe = onSnapshot(donationRef, (doc) => {
+        if (doc.exists() && doc.data().status === 'aprovado') {
+          console.log("Doação aprovada! Salvando 'carimbo' e abrindo modal de agradecimento.");
+          localStorage.setItem('hasDonated', 'true');
+          setIsConfirmationModalOpen(true);
+          window.history.replaceState({}, document.title, window.location.pathname);
+          unsubscribe();
+        }
+      });
+      return () => unsubscribe();
     }
   }, [searchParams]);
 
@@ -158,7 +166,7 @@ function ChaDeBebePage() {
         <div className="mt-8 max-w-md mx-auto">
           <p className="font-semibold text-lg text-center text-gray-700 mb-4">Escolha um valor:</p>
           <div className="grid grid-cols-3 gap-4">{valoresSugeridos.map(valor => (<button key={valor} onClick={() => handleSelecionarValor(valor)} className={`p-4 rounded-lg text-xl font-bold border-2 transition-all ${!inputAtivo && valorSelecionado === valor ? 'bg-cyan-500 text-white border-cyan-700 shadow-lg' : 'bg-white text-cyan-700 border-gray-300 hover:border-cyan-500'}`}>R$ {valor}</button>))}</div>
-          <div className="mt-6 text-center"><p className="text-gray-600 mb-2">Ou digite outro valor:</p><input type="number" value={valorCustom} onChange={handleCustomInputChange} className="w-full max-w-xs mx-auto p-3 text-center text-2xl font-bold border-2 border-gray-300 rounded-lg" placeholder="R$ 0,00" /></div>
+          <div className="mt-6 text-center"><p className="text-gray-600 mb-2">Ou digite outro valor:</p><input type="number" value={valorCustom} onChange={handleCustomInputChange} className="w-full max-w-xs mx-auto p-3 text-center text-xl font-bold border-2 border-gray-300 rounded-lg" placeholder="R$ 0,00" /></div>
         </div>
         <div className="mt-10 text-center"><button onClick={handlePagamento} disabled={isLoading} className="w-full max-w-md mx-auto inline-flex justify-center py-4 px-8 border border-transparent shadow-lg text-lg font-bold rounded-md text-white bg-green-500 hover:bg-green-600 disabled:bg-gray-400"> {isLoading ? 'Gerando link...' : 'Pagar com Mercado Pago'} </button></div>
       </div>
@@ -168,9 +176,8 @@ function ChaDeBebePage() {
   return (
     <main className="flex flex-col items-center min-h-screen p-4 sm:p-8">
       <div className="w-full max-w-4xl">
-        <header className="relative w-full h-48 sm:h-56 rounded-t-2xl flex flex-col justify-center items-center text-center p-4" 
-          style={{ backgroundImage: "url('/images/fundo-header.png')", backgroundSize: 'cover', backgroundPosition: 'bottom' }}>
-          <h2 className={`text-4xl sm:text-6xl text-white ${grafiteFonte.className}`} style={{  textShadow: '2px 2px 4px rgba(0,0,0,1)' }}>Chá de Bebê do</h2>
+        <header className="relative w-full h-48 sm:h-56 rounded-t-2xl flex flex-col justify-center items-center text-center p-4" style={{ backgroundImage: "url('/images/fundo-header.png')", backgroundSize: 'cover', backgroundPosition: 'bottom' }}>
+          <h2 className={`text-4xl sm:text-6xl text-white ${grafiteFonte.className}`} style={{ textShadow: '2px 2px 4px rgba(0,0,0,1)' }}>Chá de Bebê do</h2>
           <h2 className={`text-5xl sm:text-7xl text-white ${graffitiFont.className}`} style={{ textShadow: '2px 2px 4px rgba(0,0,0,1)' }}>Daiki</h2>
           <div className='absolute top-2 right-2 w-28 h-28 sm:w-36 sm:h-36'><Image src="/images/bebe-skatista.png" alt="Bebê-Skatista" layout="fill" objectFit='contain' /></div>
         </header>
@@ -188,14 +195,11 @@ function ChaDeBebePage() {
 }
 
 
-// --- O COMPONENTE DE EXPORT PADRÃO QUE USA O SUSPENSE ---
+// O componente de export padrão que usa o Suspense
 export default function Home() {
-    // A tag <React.Fragment> é opcional aqui, mas ajuda na clareza
     return (
-        <React.Fragment>
-            <Suspense fallback={<div className="flex justify-center items-center min-h-screen body-background text-cyan-800 font-bold text-xl">Carregando a página...</div>}>
-                <ChaDeBebePage />
-            </Suspense>
-        </React.Fragment>
+        <Suspense fallback={<div className="flex justify-center items-center min-h-screen body-background text-cyan-800 font-bold text-xl">Carregando a página...</div>}>
+            <ChaDeBebePage />
+        </Suspense>
     )
 }
