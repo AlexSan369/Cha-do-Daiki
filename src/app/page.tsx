@@ -86,40 +86,101 @@ export default function Home() {
   };
 
   const AbaPresentear = () => {
+    // ESTADOS ANTIGOS
     const [valorSelecionado, setValorSelecionado] = useState(50);
     const [valorCustom, setValorCustom] = useState('');
     const [inputAtivo, setInputAtivo] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [arrecadado, setArrecadado] = useState(0);
+    
+    // NOVO ESTADO PARA O NOME DO DOADOR
+    const [nomeDoador, setNomeDoador] = useState('');
+
     const meta = 2000;
+    
     useEffect(() => {
       const summaryRef = doc(db, 'arrecadacao', 'total');
       const unsubscribe = onSnapshot(summaryRef, (doc) => { if (doc.exists()) { setArrecadado(doc.data().valor); } });
       return () => unsubscribe();
     }, []);
+
     const porcentagem = arrecadado > 0 ? (arrecadado / meta) * 100 : 0;
     const valoresSugeridos = [30, 50, 100];
-    const handleSelecionarValor = (valor: number) => { setValorSelecionado(valor); setInputAtivo(false); setValorCustom(''); };
-    const handleCustomInputChange = (e: ChangeEvent<HTMLInputElement>) => { setInputAtivo(true); setValorCustom(e.target.value); setValorSelecionado(0); };
-    const handlePagamento = async () => {
-      const valorFinal = inputAtivo ? Number(valorCustom) : valorSelecionado;
-      if (valorFinal <= 0) { alert("Por favor, selecione ou digite um valor para presentear."); return; }
-      setIsLoading(true);
-      try {
-        const response = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: 'Presente para o Chá de Bebê do Daiki', unit_price: valorFinal, quantity: 1 }) });
-        if (!response.ok) { throw new Error("Falha ao criar o link de pagamento."); }
-        const data = await response.json();
-        if (data.init_point) { window.location.href = data.init_point; } else { alert('Erro ao gerar link de pagamento.'); }
-      } catch (error) { console.error('Erro no pagamento:', error); alert('Ocorreu um erro inesperado. Tente novamente.');
-      } finally { setIsLoading(false); }
+
+    const handleSelecionarValor = (valor: number) => {
+      setValorSelecionado(valor);
+      setInputAtivo(false);
+      setValorCustom('');
     };
+
+    const handleCustomInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setInputAtivo(true);
+      setValorCustom(e.target.value);
+      setValorSelecionado(0);
+    };
+    
+    // FUNÇÃO DE PAGAMENTO ATUALIZADA
+    const handlePagamento = async () => {
+        const valorFinal = inputAtivo ? Number(valorCustom) : valorSelecionado;
+        
+        // Nova validação para o nome
+        if (!nomeDoador.trim()) {
+            alert("Por favor, preencha seu nome para identificarmos seu presente.");
+            return;
+        }
+        if (valorFinal <= 0) {
+            alert("Por favor, selecione ou digite um valor para presentear.");
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            // Agora enviamos também o nome do doador
+            const response = await fetch('/api/checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title: `Presente de ${nomeDoador} para o Daiki`,
+                    unit_price: valorFinal,
+                    quantity: 1,
+                    donor_name: nomeDoador, // Enviando o nome para o backend
+                }),
+            });
+
+            if (!response.ok) { throw new Error("Falha ao criar o link de pagamento."); }
+            const data = await response.json();
+            if (data.init_point) { window.location.href = data.init_point; }
+            else { alert('Erro ao gerar link de pagamento.'); }
+
+        } catch (error) {
+            console.error('Erro no pagamento:', error);
+            alert('Ocorreu um erro inesperado. Tente novamente.');
+        } finally {
+            setIsLoading(false);
+        }
+    }
     return (
       <div className="py-10">
         <h2 className="text-2xl font-bold text-cyan-800 text-center">Presentear o Daiki</h2>
         <p className="mt-2 text-center text-gray-600">Sua contribuição ajudará a comprar um kit de fraldas ecológicas e outros itens essenciais!</p>
+        
         <div className="mt-8 max-w-md mx-auto">
-          <div className="flex justify-between mb-1"><span className="text-base font-medium text-cyan-700">Arrecadado: R$ {arrecadado.toFixed(2)}</span><span className="text-base font-medium text-gray-500">Meta: R$ {meta.toFixed(2)}</span></div>
-          <div className="w-full bg-gray-200 rounded-full h-4 shadow-inner"><div className="bg-gradient-to-r from-cyan-400 to-teal-500 h-4 rounded-full shadow-md" style={{ width: `${porcentagem}%` }}></div></div>
+            {/* NOVO CAMPO DE NOME */}
+            <div className="mb-6">
+                <label htmlFor="donorName" className="block text-lg font-semibold text-gray-700 text-center mb-2">Seu nome</label>
+                <input
+                  type="text"
+                  id="donorName"
+                  value={nomeDoador}
+                  onChange={(e) => setNomeDoador(e.target.value)}
+                  className="w-full max-w-xs mx-auto p-3 text-center text-xl font-bold border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                  placeholder="Digite seu nome aqui"
+                />
+            </div>
+
+            <div className="flex justify-between mb-1"><span className="text-base font-medium text-cyan-700">Arrecadado: R$ {arrecadado.toFixed(2)}</span><span className="text-base font-medium text-gray-500">Meta: R$ {meta.toFixed(2)}</span></div>
+            <div className="w-full bg-gray-200 rounded-full h-4 shadow-inner"><div className="bg-gradient-to-r from-cyan-400 to-teal-500 h-4 rounded-full shadow-md" style={{ width: `${porcentagem}%` }}></div></div>
         </div>
         <div className="mt-8 max-w-md mx-auto">
           <p className="font-semibold text-lg text-center text-gray-700 mb-4">Escolha um valor:</p>
