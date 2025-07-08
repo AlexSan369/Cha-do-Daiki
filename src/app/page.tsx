@@ -1,7 +1,7 @@
 // Caminho: src/app/page.tsx
 "use client";
 
-import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react';
+import React, { useState, useEffect, FormEvent, Suspense, ChangeEvent } from 'react';
 import Image from 'next/image';
 import { db } from '../lib/firebase';
 import { collection, addDoc, doc, onSnapshot } from 'firebase/firestore';
@@ -16,22 +16,20 @@ import MuralDeRecados from '../components/MuralDeRecados';
 
 type Aba = 'inicio' | 'confirmar' | 'presentear';
 
-export default function Home() {
+// --- NOSSO COMPONENTE PRINCIPAL COM TODA A LÓGICA ---
+// Ele usa os hooks que precisam do "use client"
+function ChaDeBebePage() {
   const [abaAtiva, setAbaAtiva] = useState<Aba>('inicio');
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [isHowItWorksModalOpen, setIsHowItWorksModalOpen] = useState(false);
-
-  // --- LÓGICA DO "CARIMBO DIGITAL" PARA IDENTIFICAR DOADORES ---
+  
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    // Verifica se a URL contém "?status=approved"
     if (searchParams.get('status') === 'approved') {
-      // Se sim, salva o "carimbo" no navegador
       localStorage.setItem('hasDonated', 'true');
       console.log("Doador verificado e 'carimbo' salvo no Local Storage.");
-      // Limpa a URL para não mostrar os parâmetros, melhorando a experiência do usuário
-      window.history.replaceState({}, document.title, "/");
+      window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, [searchParams]);
 
@@ -45,10 +43,7 @@ export default function Home() {
         <p className="font-semibold text-2xl text-cyan-700" style={{fontFamily: 'cursive'}}>É HORA DE CELEBRAR A VIDA!</p>
         <p>Com o coração cheio de alegria, convidamos você para celebrar a chegada do nosso amado Daiki. Estamos preparando tudo com muito carinho para este momento e sua presença, mesmo que virtual, é o nosso maior presente. Vamos juntos compartilhar sorrisos e criar memórias inesquecíveis!</p>
         <div className="text-center pt-4">
-          <button 
-            onClick={() => setIsHowItWorksModalOpen(true)} 
-            className="px-6 py-2 bg-cyan-500 text-white font-bold rounded-lg shadow-md hover:bg-cyan-600 transition-all transform hover:scale-105"
-          >
+          <button onClick={() => setIsHowItWorksModalOpen(true)} className="px-6 py-2 bg-cyan-500 text-white font-bold rounded-lg shadow-md hover:bg-cyan-600 transition-all transform hover:scale-105">
             Como Funciona?
           </button>
         </div>
@@ -126,10 +121,7 @@ export default function Home() {
         if (valorFinal <= 0) { alert("Por favor, selecione ou digite um valor para presentear."); return; }
         setIsLoading(true);
         try {
-            const response = await fetch('/api/checkout', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title: `Presente de ${nomeDoador} para o Daiki`, unit_price: valorFinal, quantity: 1, donor_name: nomeDoador }),
+            const response = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: `Presente de ${nomeDoador} para o Daiki`, unit_price: valorFinal, quantity: 1, donor_name: nomeDoador }),
             });
             if (!response.ok) { throw new Error("Falha ao criar o link de pagamento."); }
             const data = await response.json();
@@ -179,4 +171,17 @@ export default function Home() {
       <HowItWorksModal isOpen={isHowItWorksModalOpen} onClose={() => setIsHowItWorksModalOpen(false)} />
     </main>
   );
+}
+
+
+// --- O COMPONENTE DE EXPORT PADRÃO QUE USA O SUSPENSE ---
+export default function Home() {
+    // A tag <React.Fragment> é opcional aqui, mas ajuda na clareza
+    return (
+        <React.Fragment>
+            <Suspense fallback={<div className="flex justify-center items-center min-h-screen body-background text-cyan-800 font-bold text-xl">Carregando a página...</div>}>
+                <ChaDeBebePage />
+            </Suspense>
+        </React.Fragment>
+    )
 }
