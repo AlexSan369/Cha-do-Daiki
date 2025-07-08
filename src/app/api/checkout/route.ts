@@ -45,6 +45,19 @@ export async function POST(req: NextRequest) {
     const preference = new Preference(client);
     const result = await preference.create(preferenceBody);
 
-    return NextResponse.json({ id: result.id, init_point: result.init_point });
-  } catch (err) { /* ...bloco catch ... */ }
+    return NextResponse.json(
+      { id: result.id, init_point: result.init_point },
+      { status: 201 },
+    );
+
+  } catch (error) { // --- MUDANÇA AQUI ---
+    // Mudei o nome da variável para 'error' e estruturei a mensagem de forma diferente
+    // para garantir que o linter entenda que ela está sendo usada.
+    console.error('Mercado Pago error →', error);
+    let errorMessage = 'Erro desconhecido ao criar preferência';
+    if (error instanceof Error) {
+        errorMessage = error.message;
+    }
+    return NextResponse.json({ message: errorMessage }, { status: 500 });
+  }
 }
