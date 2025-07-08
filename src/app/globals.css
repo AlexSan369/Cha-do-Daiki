@@ -10,3 +10,9 @@ body {
   background-position: top center;
   background-repeat: repeat;
 }
+
+.body-bg {
+  background-image: url('/images/bg-body.png');
+  background-repeat: repeat;
+  background-color: #e0f7fa;
+}
