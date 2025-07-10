@@ -28,7 +28,7 @@ const steps = [
   {
     number: 4,
     title: "Sobre o Evento",
-    description: "O Chá de Bebê do Daiki será no dia 29/08/2025, às 15:00, na Rua teste, 123, Tamandaré - PE. Será uma festa linda com muito amor e alegria!"
+    description: "O Chá de Bebê do Daiki será no dia xx/xx/2025, às 15:00, na Rua xx, x, Tamandaré - PE. Será um dia de celebração com muito amor e alegria!"
   },
 ];
 
