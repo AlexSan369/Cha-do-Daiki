@@ -69,7 +69,7 @@ const MuralDeRecados = () => {
                 </div>
                 <p className={`break-words ${messageClasses}`}>{recado.mensagem}</p>
               </div>
-              {isDonorPost && (<p className="mt-4 text-right text-xs italic text-amber-900/80">Agradecemos o presente!👼</p>)}
+              {isDonorPost && (<p className="mt-4 text-right text-xs italic text-amber-900/80">Agradecemos o presente!💛</p>)}
             </div>
           )
         })}
