@@ -4,7 +4,7 @@
 import React, { useState, useEffect, FormEvent, Suspense, ChangeEvent } from 'react';
 import Image from 'next/image';
 import { db } from '../lib/firebase';
-import { collection, addDoc, doc, onSnapshot, serverTimestamp, query, orderBy } from 'firebase/firestore';
+import { collection, addDoc, doc, onSnapshot, serverTimestamp } from 'firebase/firestore';
 import { useSearchParams } from 'next/navigation';
 import localFont from 'next/font/local';
 
@@ -209,7 +209,9 @@ function ChaDeBebePage() {
         <header className="relative w-full h-48 sm:h-56 rounded-t-2xl flex flex-col justify-center items-center text-center p-4" style={{ backgroundImage: "url('/images/fundo-header.png')", backgroundSize: 'cover', backgroundPosition: 'bottom' }}>
           <h2 className={`text-4xl sm:text-6xl text-white ${grafiteFonte.className}`} style={{ textShadow: '2px 2px 4px rgba(0,0,0,1)' }}>Chá de Bebê do</h2>
           <h2 className={`text-5xl sm:text-7xl text-white ${graffitiFont.className}`} style={{ textShadow: '2px 2px 4px rgba(0,0,0,1)' }}>Daiki</h2>
-          <div className='absolute top-2 right-2 w-28 h-28 sm:w-36 sm:h-36'><Image src="/images/bebe-skatista.png" alt="Bebê-Skatista" layout="fill" objectFit='contain' /></div>
+          <div className='absolute top-1 right-1 w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36'>
+            <Image src="/images/bebe-skatista.png" alt="Bebê-Skatista" layout="fill" objectFit='contain' />
+          </div>
         </header>
         <div className="w-full bg-white/90 backdrop-blur-sm p-4 sm:p-6 shadow-xl">
           <nav className="flex justify-center flex-wrap space-x-1 sm:space-x-4 border-b-2 border-cyan-200 pb-3">

@@ -11,10 +11,14 @@ const ContadorSemanas = () => {
   const weeks = Math.floor(diffDays / 7);
 
   return (
-    <div className="absolute bottom-2 right-2 w-36 h-28 sm:w-44 sm:h-36">
+    // Div container com tamanhos responsivos
+    <div className="absolute bottom-1 right-1 w-28 h-24 sm:w-36 sm:h-28 md:w-44 md:h-36">
       <Image src="/images/grafico-semanas.png" alt="Gráfico de semanas da mamãe" layout="fill" objectFit="contain" />
       <div className="absolute inset-0 flex justify-center items-center">
-        <span className="text-white text-5xl sm:text-6xl font-bold" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>{weeks}</span>
+        {/* O número também tem tamanhos de fonte responsivos */}
+        <span className="text-white text-4xl sm:text-5xl md:text-6xl font-bold" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
+          {weeks}
+        </span>
       </div>
     </div>
   );
