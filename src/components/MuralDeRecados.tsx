@@ -65,11 +65,11 @@ const MuralDeRecados = () => {
               <div>
                 <div className={`font-bold text-xl text-center mb-4 flex items-center justify-center gap-2 ${nameClasses}`} style={{fontFamily: 'cursive'}}>
                   <span> {recado.nome}</span>
-                  {isDonorPost && <span title="Agradecemos o presente!s2>">👑</span>}
+                  {isDonorPost && <span title="Agradecemos o presente!>">👑</span>}
                 </div>
                 <p className={`break-words ${messageClasses}`}>{recado.mensagem}</p>
               </div>
-              {isDonorPost && (<p className="mt-4 text-right text-xs italic text-amber-900/80">Agradecemos o presente!</p>)}
+              {isDonorPost && (<p className="mt-4 text-right text-xs italic text-amber-900/80">Agradecemos o presente!👼</p>)}
             </div>
           )
         })}
