@@ -26,6 +26,7 @@ import ConfirmationModal from '../components/ConfirmationModal';
 import GuestCounter from '../components/GuestCounter';
 import ContadorSemanas from '../components/ContadorSemanas';
 import MuralDeRecados from '../components/MuralDeRecados';
+import ImageCarousel from '../components/ImageCarousel';
 
 // Tipo Aba atualizado
 type Aba = 'inicio' | 'confirmar' | 'presentear' | 'mural';
@@ -55,8 +56,8 @@ function ChaDeBebePage() {
 
   const AbaInicio = () => (
     <>
-      <div className="my-6 relative w-full max-w-md mx-auto">
-        <Image src="/images/foto-principal.jpg" alt="Foto da mamãe do Daiki" width={600} height={800} className="rounded-xl shadow-md" />
+      <div className="my-6 relative w-full max-w-md mx-auto aspect-square">
+        <ImageCarousel />
         <ContadorSemanas />
       </div>
       <div className="text-gray-700 text-lg sm:text-xl space-y-4">

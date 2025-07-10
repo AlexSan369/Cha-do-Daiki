@@ -4,6 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 body {
   background-image: url('/images/bg-body.png');
   background-size: cover;
@@ -15,4 +16,52 @@ body {
   background-image: url('/images/bg-body.png');
   background-repeat: repeat;
   background-color: #e0f7fa;
+}
+
+/* Aplicando as variáveis diretamente no container da Swiper para maior especificidade */
+.swiper {
+  --swiper-theme-color: #353535;
+  --swiper-navigation-size: 26px;
+}
+
+/* Estilos customizados para a paginação do Swiper */
+.swiper-pagination-bullet {
+  background-color: #d6d3d1; /* Um cinza claro da paleta stone */
+  opacity: 0.8;
+  transition: background-color 0.3s;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: #c9a58f; /* Nossa cor principal! */
+  opacity: 1;
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+color: #c9a58f; /* Nossa cor principal */
+background-color: transparent; /* Um fundo transparente */
+border-radius: 50%;
+width: 40px;
+height: 40px;
+display: flex;
+justify-content: center;
+align-items: center;
+font-weight: bold;
+transition: all 0.3s ease;
+}
+
+.swiper-button-prev:after,
+.swiper-button-next:after {
+font-size: 1.2em;
+}
+
+.swiper-button-prev:hover,
+.swiper-button-next:hover {
+background-color: transparent;
+color: #a08068; /* Uma variação mais escura da cor principal */
+}
+
+.swiper-button-disabled {
+opacity: 0.3;
+cursor: default;
 }

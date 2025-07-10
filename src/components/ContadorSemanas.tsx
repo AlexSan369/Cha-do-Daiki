@@ -12,7 +12,7 @@ const ContadorSemanas = () => {
 
   return (
     // Div container com tamanhos responsivos
-    <div className="absolute bottom-1 right-1 w-28 h-24 sm:w-36 sm:h-28 md:w-44 md:h-36">
+    <div className="absolute z-10 bottom-1 right-1 w-28 h-24 sm:w-36 sm:h-28 md:w-44 md:h-36">
       <Image src="/images/grafico-semanas.png" alt="Gráfico de semanas da mamãe" layout="fill" objectFit="contain" />
       <div className="absolute inset-0 flex justify-center items-center">
         {/* O número também tem tamanhos de fonte responsivos */}
