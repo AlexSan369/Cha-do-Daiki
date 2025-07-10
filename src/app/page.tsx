@@ -61,7 +61,7 @@ function ChaDeBebePage() {
         <ContadorSemanas />
       </div>
       <div className="text-gray-700 text-lg sm:text-xl space-y-4">
-        <p className="font-semibold text-2xl text-[#c9a58f]" style={{fontFamily: 'cursive'}}>É HORA DE CELEBRAR A VIDA!</p>
+        <p className="font-semibold text-2xl text-[#c9a58f]">É HORA DE CELEBRAR A VIDA!</p>
         <p>Com o coração cheio de alegria, convidamos você para celebrar a chegada do nosso amado Daiki. Estamos preparando tudo com muito carinho para este momento e sua presença, mesmo que virtual, é o nosso maior presente. Vamos juntos compartilhar sorrisos e criar memórias inesquecíveis!</p>
         <div className="text-center pt-4">
           <button onClick={() => setIsHowItWorksModalOpen(true)} className="px-6 py-2 bg-[#c9a58f] text-white font-bold rounded-lg shadow-md hover:bg-stone-200 transition-all transform hover:scale-105">
