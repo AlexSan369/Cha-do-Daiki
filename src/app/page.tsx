@@ -10,7 +10,7 @@ import localFont from 'next/font/local';
 
 // Suas fontes customizadas
 const graffitiFont = localFont({ 
-  src: '../fonts/graffiti-font.otf', 
+  src: '../fonts/graffiti-font.ttf', 
   display: 'swap',
   variable: '--font-graffiti'
 });
@@ -60,10 +60,10 @@ function ChaDeBebePage() {
         <ContadorSemanas />
       </div>
       <div className="text-gray-700 text-lg sm:text-xl space-y-4">
-        <p className="font-semibold text-2xl text-cyan-700" style={{fontFamily: 'cursive'}}>É HORA DE CELEBRAR A VIDA!</p>
+        <p className="font-semibold text-2xl text-[#c9a58f]" style={{fontFamily: 'cursive'}}>É HORA DE CELEBRAR A VIDA!</p>
         <p>Com o coração cheio de alegria, convidamos você para celebrar a chegada do nosso amado Daiki. Estamos preparando tudo com muito carinho para este momento e sua presença, mesmo que virtual, é o nosso maior presente. Vamos juntos compartilhar sorrisos e criar memórias inesquecíveis!</p>
         <div className="text-center pt-4">
-          <button onClick={() => setIsHowItWorksModalOpen(true)} className="px-6 py-2 bg-cyan-500 text-white font-bold rounded-lg shadow-md hover:bg-cyan-600 transition-all transform hover:scale-105">
+          <button onClick={() => setIsHowItWorksModalOpen(true)} className="px-6 py-2 bg-[#c9a58f] text-white font-bold rounded-lg shadow-md hover:bg-stone-200 transition-all transform hover:scale-105">
             Como Funciona?
           </button>
         </div>
@@ -207,24 +207,24 @@ function ChaDeBebePage() {
     <main className="flex flex-col items-center min-h-screen pt-8  sm:pt-8">
       <div className="w-full max-w-4xl">
         <header className="relative w-full h-48 sm:h-56 rounded-t-2xl flex flex-col justify-center items-center text-center p-4" style={{ backgroundImage: "url('/images/fundo-header.png')", backgroundSize: 'cover', backgroundPosition: 'bottom' }}>
-          <h2 className={`text-4xl sm:text-6xl text-white ${grafiteFonte.className}`} style={{ textShadow: '2px 2px 4px rgba(0,0,0,1)' }}>Chá de Bebê do</h2>
-          <h2 className={`text-5xl sm:text-7xl text-white ${graffitiFont.className}`} style={{ textShadow: '2px 2px 4px rgba(0,0,0,1)' }}>Daiki</h2>
-          <div className='absolute top-1 right-1 w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36'>
+          <h2 className={`pt-6 text-6xl sm:text-7xl text-[#c9a58f] ${grafiteFonte.className}`} style={{ textShadow: '2px 2px 4px rgba(0,0,0,1)' }}>Chá de Bebê do</h2>
+          <h2 className={`text-5xl sm:text-7xl text-[#c9a58f] ${graffitiFont.className}`} style={{ textShadow: '2px 2px 4px rgb(5, 5, 5)' }}>Daiki</h2>
+          <div className='absolute top-6 right-6 w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36'>
             <Image src="/images/bebe-skatista.png" alt="Bebê-Skatista" layout="fill" objectFit='contain' />
           </div>
         </header>
         <div className="w-full bg-white/90 backdrop-blur-sm p-4 sm:p-6 shadow-xl">
-          <nav className="flex justify-center flex-wrap space-x-1 sm:space-x-4 border-b-2 border-cyan-200 pb-3">
-            <button onClick={() => setAbaAtiva('inicio')} className={`px-3 py-2 text-sm sm:text-base rounded-lg font-semibold transition-all duration-300 ${abaAtiva === 'inicio' ? 'bg-cyan-500 text-white shadow-md' : 'text-gray-600 hover:bg-cyan-100'}`}>Início</button>
-            <button onClick={() => setAbaAtiva('confirmar')} className={`px-3 py-2 text-sm sm:text-base rounded-lg font-semibold transition-all duration-300 ${abaAtiva === 'confirmar' ? 'bg-cyan-500 text-white shadow-md' : 'text-gray-600 hover:bg-cyan-100'}`}>Confirmar Presença</button>
-            <button onClick={() => setAbaAtiva('presentear')} className={`px-3 py-2 text-sm sm:text-base rounded-lg font-semibold transition-all duration-300 ${abaAtiva === 'presentear' ? 'bg-cyan-500 text-white shadow-md' : 'text-gray-600 hover:bg-cyan-100'}`}>Presentear</button>
-            <button onClick={() => setAbaAtiva('mural')} className={`px-3 py-2 text-sm sm:text-base rounded-lg font-semibold transition-all duration-300 ${abaAtiva === 'mural' ? 'bg-cyan-500 text-white shadow-md' : 'text-gray-600 hover:bg-cyan-100'}`}>Mural de Recados</button>
+          <nav className="flex justify-center flex-wrap space-x-1 sm:space-x-4 border-b-2 border-[#c9a58f] pb-3">
+            <button onClick={() => setAbaAtiva('inicio')} className={`px-3 py-2 text-sm sm:text-base rounded-lg font-semibold transition-all duration-300 ${abaAtiva === 'inicio' ? 'bg-[#c9a58f] text-white shadow-md' : 'text-gray-600 hover:bg-stone-200'}`}>Início</button>
+            <button onClick={() => setAbaAtiva('presentear')} className={`px-3 py-2 text-sm sm:text-base rounded-lg font-semibold transition-all duration-300 ${abaAtiva === 'presentear' ? 'bg-[#c9a58f] text-white shadow-md' : 'text-gray-600 hover:bg-stone-200'}`}>Presentear</button>
+            <button onClick={() => setAbaAtiva('mural')} className={`px-3 py-2 text-sm sm:text-base rounded-lg font-semibold transition-all duration-300 ${abaAtiva === 'mural' ? 'bg-[#c9a58f] text-white shadow-md' : 'text-gray-600 hover:bg-stone-200'}`}>Deixe sua Mensagem</button>
+            <button onClick={() => setAbaAtiva('confirmar')} className={`px-3 py-2 text-sm sm:text-base rounded-lg font-semibold transition-all duration-300 ${abaAtiva === 'confirmar' ? 'bg-[#c9a58f] text-white shadow-md' : 'text-gray-600 hover:bg-stone-200'}`}>Confirmar Presença</button>
           </nav>
           <div className="mt-6 text-center">
             {abaAtiva === 'inicio' && <AbaInicio />}
-            {abaAtiva === 'confirmar' && <AbaConfirmar />}
             {abaAtiva === 'presentear' && <AbaPresentear />}
             {abaAtiva === 'mural' && <AbaMural />}
+            {abaAtiva === 'confirmar' && <AbaConfirmar />}
           </div>
         </div>
       </div>
@@ -238,7 +238,7 @@ function ChaDeBebePage() {
     backgroundRepeat: 'no-repeat' 
   }}
 >
-  <p className="text-sm text-gray-600 font-semibold">
+  <p className="text-sm text-gray-600 font-semibold pr-25 pb-1" style={{ fontFamily: 'cursive' }}>
     Desenvolvido com ❤️ pelo Papai
   </p>
 </footer>

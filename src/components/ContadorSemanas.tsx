@@ -16,7 +16,7 @@ const ContadorSemanas = () => {
       <Image src="/images/grafico-semanas.png" alt="Gráfico de semanas da mamãe" layout="fill" objectFit="contain" />
       <div className="absolute inset-0 flex justify-center items-center">
         {/* O número também tem tamanhos de fonte responsivos */}
-        <span className="text-white text-4xl sm:text-5xl md:text-6xl font-bold" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
+        <span className="text-white text-4xl sm:text-5xl md:text-0xl font-bold" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
           {weeks}
         </span>
       </div>

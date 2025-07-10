@@ -46,7 +46,7 @@ const MuralDeRecados = () => {
 
   return (
     <section id="mural" className="w-full max-w-4xl mt-10 text-center">
-      <h2 className="text-3xl font-bold text-cyan-800 mb-8">Recados Deixados</h2>
+      <h2 className="text-3xl font-bold text-[#c9a58f] mb-8">Deixe sua Mensagens para o Daiki</h2>
       
       {recados.length === 0 && !loadingMore && (
         <p className="text-gray-500">Nenhum recado ainda. Seja o primeiro!</p>
