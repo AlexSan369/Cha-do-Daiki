@@ -107,7 +107,7 @@ function ChaDeBebePage() {
             <GuestCounter label="Crianças" count={criancas} setCount={setCriancas} min={0} />
           </div>
           <div className="text-center pt-4">
-            <button type="submit" disabled={isLoading} className="w-full inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-cyan-600 hover:bg-cyan-700 disabled:bg-gray-400">
+            <button type="submit" disabled={isLoading} className="w-full inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-teal-500 hover:bg-teal-600 disabled:bg-gray-400">
               {isLoading ? 'Enviando...' : 'Confirmar Presença'}
             </button>
           </div>
@@ -164,7 +164,7 @@ function ChaDeBebePage() {
           <div className="grid grid-cols-3 gap-4">{valoresSugeridos.map(valor => (<button key={valor} onClick={() => handleSelecionarValor(valor)} className={`p-4 rounded-lg text-xl font-bold border-2 transition-all ${!inputAtivo && valorSelecionado === valor ? 'bg-cyan-500 text-white border-cyan-700 shadow-lg' : 'bg-white text-cyan-700 border-gray-300 hover:border-cyan-500'}`}>R$ {valor}</button>))}</div>
           <div className="mt-6 text-center"><p className="text-gray-600 mb-2">Ou digite outro valor:</p><input type="number" value={valorCustom} onChange={handleCustomInputChange} className="w-full max-w-xs mx-auto p-3 text-center text-2xl font-bold border-2 border-gray-300 rounded-lg" placeholder="R$ 0,00" /></div>
         </div>
-        <div className="mt-10 text-center"><button onClick={handlePagamento} disabled={isLoading} className="w-full max-w-md mx-auto inline-flex justify-center py-4 px-8 border border-transparent shadow-lg text-lg font-bold rounded-md text-white bg-green-500 hover:bg-green-600 disabled:bg-gray-400"> {isLoading ? 'Gerando link...' : 'Pagar com Mercado Pago'} </button></div>
+        <div className="mt-10 text-center"><button onClick={handlePagamento} disabled={isLoading} className="w-full max-w-md mx-auto inline-flex justify-center py-4 px-8 border border-transparent shadow-lg text-lg font-bold rounded-md text-white bg-teal-500 hover:bg-teal-600 disabled:bg-gray-400"> {isLoading ? 'Gerando link...' : 'Pagar com Mercado Pago'} </button></div>
       </div>
     );
   };
